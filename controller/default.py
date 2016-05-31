@@ -14,6 +14,7 @@ import datetime
 
 #if not session.cart:
 #    session.cart, session.balance = [], 0
+@auth.requires_login()
 def account():
     order_list = db(db.sale.buyer == auth.user.id).select()
     return locals()
