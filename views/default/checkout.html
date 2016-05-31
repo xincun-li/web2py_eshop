@@ -24,7 +24,7 @@
                 	</tr>
                 	{{for n,product in enumerate(order):}}
                 	<tr>
-                		<td class="span1"><a href="{{=URL('product', args=product[3].id)}}"><img src="{{=URL('download', args=product[3].product_image)}}" style="max-height: 50px;" /></a></td>
+                		<td class="span1"><a href="{{=URL('product', args=product[3].id)}}"><img src="{{=URL('download', args=product[3].image)}}" style="max-height: 50px;" /></a></td>
                 		<td class="span5">
                 			<a href="{{=URL('product', args=product[3].id)}}">{{=product[3].name}}</a>
 
@@ -36,7 +36,9 @@
                                     {{=product[1]}}
                 				</div>
                 				<div class="span5">
-                				<button type="submit" class="btn btn-danger btn-mini"><a href="{{=URL('remove_from_cart', args=n)}}"><i class="icon-trash icon-white"></i></a></button>
+                                    <a href="{{=URL('default', 'remove_from_cart', vars=dict(id=product[3].id))}}" class="btn btn-default add-to-cart">
+                                    <i class="fa fa-shopping-cart"></i>{{=T("Remove")}}
+                                  </a>
                 				</div>
                 			</div>
                 		</td>

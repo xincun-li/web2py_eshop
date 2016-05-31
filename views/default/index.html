@@ -13,13 +13,13 @@
             <h6>Price : {{=product.price}}</h6>
             <h6>Shipping : {{=product.shipping}}</h6>
             {{if product.quantity > 0:}}
-              <a href="{{=URL('default', 'checkout', vars={'productid':product.id})}}" class="btn btn-default add-to-cart">
+              <a href="{{=URL('default', 'cart', vars=dict(id=product.id, action='add'))}}" class="btn btn-default add-to-cart">
                 <i class="fa fa-shopping-cart"></i>{{=T("Add to cart")}}
               </a>
             {{else:}}
               {{=T("Sold out.")}}
             {{pass}}
-            <a href="{{=URL('default', 'checkout', vars={'productid':product.id})}}" class="btn btn-default add-to-cart">
+            <a href="{{=URL('default', 'view_product', vars={'productid':product.id})}}" class="btn btn-default add-to-cart">
               <i class="fa fa-shopping-cart"></i>{{=T("View more")}}
             </a>
           </div>

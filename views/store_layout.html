@@ -12,7 +12,6 @@
 
     <script src="{{=URL('static', 'js/jquery.js')}}"></script>
     <script src="{{=URL('static', 'js/bootstrap.min.js')}}"></script>
-    <link href="{{=URL('static', 'css/style.css')}}" rel="stylesheet">
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -28,10 +27,11 @@
         <h3 class="muted">{{=response.title}}</h3>
         <div class="navbar">
           <div class="navbar-inner">
-            <div class="container">
-              <ul class="nav in-line">
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
                 <li><a href="{{=URL('default', 'index')}}">Home</a></li>
                 <li><a href="{{=URL('default', 'checkout')}}">{{=T('Shopping Cart')}} <span class="badge badge-important">{{=len(session.cart)}}</span></a></li>
+                <li><img src="{{=URL('static', 'images/cart.png')}}"  height="42" ></a></li>
               </ul>
             </div>
           </div>
