@@ -19,9 +19,13 @@ if not session.cart:
 def index():
     now = datetime.datetime.now()
     span = datetime.timedelta(days=10)
-    product_list = db(db.product.created_on >= (now-span)).select(limitby=(0,3), orderby=~db.product.created_on)
+    product_list = db((db.product.createdate >= (now-span)) | db.product.sale_status == True).select(limitby=(0, 100), orderby=~db.product.createdate)
     return locals()
 
+@auth.requires_membership('admin')
+def product():    
+    grid = SQLFORM.grid(db.product)
+    return locals()
 
 def user():
     """

@@ -1,23 +1,29 @@
 {{extend 'layout.html'}}
-          <div class="features_items"><!--latest products-->
-            <h2 class="title text-center">{{=T("Latest Products")}}</h2>
-            {{for product in product_list:}}
-              <div class="col-sm-4">
-                <div class="product-image-wrapper">
-                  <div class="single-products">
-                      <div class="productinfo text-center">
-                        <img src="{{=URL("download",args=product.featured_image)}}" alt="" />
-                        <h2>{{=product.price}}</h2>
-                        <p>{{=product.name}}</p>
-                        <a href="#" class="btn btn-default add-to-cart">
-                          <i class="fa fa-shopping-cart"></i>{{=T("Add to cart")}}
-                        </a>
-                        <a href="#" class="btn btn-default add-to-cart">
-                          <i class="fa fa-eye"></i>{{=T("View More")}}
-                        </a>                        
-                      </div>
-                  </div>
-                </div>
-              </div>
+
+<div class="row">
+  <div class="features_items"><!--latest products-->
+    <h2 class="title text-center">{{=T("Free eShop Products List")}}</h2>
+    {{for product in product_list:}}
+      <div class="col-sm-4 col-md-2">
+        <div class="thumbnail">
+          <img class="ProductImg" src="{{=URL("download",args=product.image)}}" alt="">
+          <div class="caption">
+            <h6>Name : {{=product.name}}</h6>
+            <h6>Category : {{=product.category}}</h6>
+            <h6>Price : {{=product.price}}</h6>
+            <h6>Shipping : {{=product.shipping}}</h6>
+            {{if product.stock_count > 0:}}
+              <a href="#" class="btn btn-default add-to-cart">
+                <i class="fa fa-shopping-cart"></i>{{=T("Add to cart")}}
+              </a>
+            {{else:}}
+              <a href="#" class="btn btn-default add-to-cart">
+                <i class="fa fa-shopping-cart"></i>{{=T("Sold out.")}}
+              </a>
             {{pass}}
-          </div><!--latest products-->
+          </div>
+        </div>
+      </div>
+    {{pass}}
+  </div>
+</div>

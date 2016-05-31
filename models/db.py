@@ -114,6 +114,7 @@ db.define_table(
     Field('stock_count','integer'),
     Field('tax_rate','double',default=11.25),
     Field('shipping','double',default=4.99),
+    Field('createdate','datetime'),
     format='%(name)s')
 
 
