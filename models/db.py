@@ -1,3 +1,4 @@
+import datetime
 from gluon.contrib.appconfig import AppConfig
 # -*- coding: utf-8 -*-
 
@@ -104,21 +105,35 @@ auth.settings.extra_fields['auth_user'] = [
 auth.define_tables(username=False, signature=False)
 if auth.user: auth.user.is_admin = True
 
+
 db.define_table(
     'product',
     Field('category'),
     Field('name',required=True),
     Field('price','double'),
-    Field('sale_status','boolean'),
+    Field('in_stock','boolean'),
+    Field('quantity','integer'),
     Field('image','upload'),
-    Field('stock_count','integer'),
     Field('tax_rate','double',default=11.25),
     Field('shipping','double',default=4.99),
-    Field('createdate','datetime'),
+    Field('create_date','datetime',default=datetime.datetime.now()),
+    auth.signature,
     format='%(name)s')
 
 
-
+def group_rows(rows,table1,*tables):
+    last = None
+    new_rows = []
+    for row in rows:
+        row_table1 = row[table1]
+        if not last or row_table1.id!=last.id:
+            last = row_table1
+            new_rows.append(last)
+            for t in tables:
+                last[t] = []
+        for t in tables:
+            last[t].append(row[t])
+    return new_rows
 ## create admin user, groups and role
 if db(db.auth_group).count() == 0:
     admin = db.auth_group.insert(role='admin')

@@ -19,13 +19,27 @@ if not session.cart:
 def index():
     now = datetime.datetime.now()
     span = datetime.timedelta(days=10)
-    product_list = db((db.product.createdate >= (now-span)) | db.product.sale_status == True).select(limitby=(0, 100), orderby=~db.product.createdate)
+    product_list = db((db.product.create_date >= (now-span)) | db.product.in_stock == True).select(limitby=(0, 100), orderby=~db.product.create_date)
     return locals()
 
 @auth.requires_membership('admin')
-def product():    
+def product():
     grid = SQLFORM.grid(db.product)
     return locals()
+
+def checkout():
+    order = []
+    balance = 0
+    for product_id, qty in session.cart:
+        product = db(db.product.id == product_id).select().first()
+        total_price = qty*product.price
+        order.append((product_id, qty, total_price, product))
+        balance += total_price
+    session.balance = balance
+
+    button1 = A(T('Continue shopping'), _href=URL('default', 'index'))
+    button2 = A(T('Buy'), _href=URL('select_address'))
+    return dict(order=order, balance=balance)
 
 def user():
     """
