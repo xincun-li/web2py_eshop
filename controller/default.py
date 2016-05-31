@@ -14,6 +14,9 @@ import datetime
 
 #if not session.cart:
 #    session.cart, session.balance = [], 0
+def account():
+    order_list = db(db.sale.buyer == auth.user.id).select()
+    return locals()
 
 def index():
     now = datetime.datetime.now()
@@ -53,6 +56,39 @@ def remove_from_cart():
     del session.cart[int(request.vars.id)]
     redirect(URL('checkout'))
 
+
+@auth.requires_login()
+def select_address():
+    addresses = db(db.address.user_id == auth.user.id).select()
+
+    adrs = []
+    for address in addresses:
+        adrs.append(address.address+', '+ address.contact_name)
+
+    form = SQLFORM.factory(
+        Field('address', requires=IS_IN_SET(adrs))
+        )
+    if form.accepts(request.vars):
+        session.address = form.vars.address
+        redirect(URL('default', 'buy'))
+
+    button = A(T('New address'), _href=URL('create_address'))
+    return dict(addresses=addresses, button=button, form=form)
+
+@auth.requires_login()
+def create_address():
+    db.address.user_id.default = auth.user.id
+    db.address.user_id.readable = db.address.user_id.writable = False
+
+    form = SQLFORM(db.address)
+    if form.process().accepted:
+        if session.cart and session.balance != 0:
+            redirect(URL('default', 'select_address'))
+        else:
+            redirect(URL('default', 'index'))
+    return dict(form=form)
+
+
 # time to pay ... now for real
 @auth.requires_login()
 def buy():
@@ -60,20 +96,20 @@ def buy():
        session.flash = 'Add something to shopping cart'
        redirect(URL('index'))
     import uuid
-    from gluon.contrib.AuthorizeNet import process
+    #from gluon.contrib.AuthorizeNet import process
     invoice = str(uuid.uuid4())
     total = sum(db.product(id).price*qty for id,qty in session.cart.items())
     form = SQLFORM.factory(
-               Field('creditcard',default='4427802641004797',requires=IS_NOT_EMPTY()),
-               Field('expiration',default='12/2012',requires=IS_MATCH('\d{2}/\d{4}')),
-               Field('cvv',default='123',requires=IS_MATCH('\d{3}')),
+               Field('creditcard',default='1234567887654321',requires=IS_NOT_EMPTY()),
+               Field('expiration',default='06/2016',requires=IS_MATCH('\d{2}/\d{4}')),
+               Field('cvv',default='999',requires=IS_MATCH('\d{3}')),
                Field('shipping_address',requires=IS_NOT_EMPTY()),
                Field('shipping_city',requires=IS_NOT_EMPTY()),
                Field('shipping_state',requires=IS_NOT_EMPTY()),
                Field('shipping_zip_code',requires=IS_MATCH('\d{5}(\-\d{4})?')))                           
     if form.accepts(request,session):
-        if process(form.vars.creditcard,form.vars.expiration,
-                   total,form.vars.cvv,0.0,invoice,testmode=True):
+        #if process(form.vars.creditcard,form.vars.expiration,
+        #           total,form.vars.cvv,0.0,invoice,testmode=True):
             for key, value in session.cart.items():
                 db.sale.insert(invoice=invoice,
                                buyer=auth.user.id,
@@ -85,21 +121,17 @@ def buy():
                                shipping_city = form.vars.shipping_city,
                                shipping_state = form.vars.shipping_state,
                                shipping_zip_code = form.vars.shipping_zip_code)
+                product_quantity = db(db.product.id == key).select().first()
+                product_quantity.update_record(quantity = max(0, product_quantity.quantity - value))
+
             session.cart.clear()          
             session.flash = 'Thank you for your order'
-            redirect(URL('invoice',args=invoice))               
-        else:
-            response.flash = "payment rejected (please call XXX)"
+            redirect(URL('invoice',args=invoice))
     return dict(cart=session.cart,form=form,total=total)
 
-# an action to add and remove items from the shopping cart
-def cart_callback():
-    id = int(request.vars.id)
-    if request.vars.action == 'add':
-        session.cart[id]=session.cart.get(id,0)+1    
-    if request.vars.action == 'sub':
-        session.cart[id]=max(0,session.cart.get(id,0)-1)
-    return str(session.cart[id])
+@auth.requires_login()
+def invoice():
+    return dict(invoice=request.args(0))
 
 def user():
     """

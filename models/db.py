@@ -120,6 +120,31 @@ db.define_table(
     auth.signature,
     format='%(name)s')
 
+db.define_table('address',
+    Field('user_id', 'reference auth_user', label=T('User')),
+    Field('contact_name', label=T('Contact Name')),
+    Field('default_address', 'boolean', default=False, label=T('Default Shipping Address')),
+    Field('zip_code', 'integer', label=T('Zip Code')),
+    Field('address', label=T('Address'))
+    )
+
+db.define_table('sale',
+   Field('invoice'),
+   Field('creditcard'),
+   Field('buyer',db.auth_user),
+   Field('product',db.product),
+   Field('quantity','integer'),
+   Field('price','double'),
+   Field('shipped','boolean',default=False),
+   Field('shipping_address'),
+   Field('shipping_city'),
+   Field('shipping_state'),
+   Field('shipping_zip_code'),
+   Field('shipping_date','datetime'),
+   Field('delivery_date','datetime'),
+   Field('tracking_number'),
+   auth.signature)
+
 
 def group_rows(rows,table1,*tables):
     last = None
