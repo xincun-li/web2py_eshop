@@ -1,4 +1,4 @@
-{{extend 'layout.html'}}
+{{extend 'store_layout.html'}}
 <h1>Your Shopping Cart</h1>
 <table width="100%">
   {{for id, qty in cart.items():}}{{p=db.product(id)}}
