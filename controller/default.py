@@ -16,8 +16,9 @@ import datetime
 #    session.cart, session.balance = [], 0
 @auth.requires_login()
 def account():
+    form=auth.profile()
     order_list = db(db.sale.buyer == auth.user.id).select()
-    return locals()
+    return dict(profile=form, order_list=order_list)
 
 def index():
     now = datetime.datetime.now()
@@ -121,6 +122,7 @@ def buy():
                                shipping_address = form.vars.shipping_address,
                                shipping_city = form.vars.shipping_city,
                                shipping_state = form.vars.shipping_state,
+                               create_date = datetime.datetime.now,
                                shipping_zip_code = form.vars.shipping_zip_code)
                 product_quantity = db(db.product.id == key).select().first()
                 product_quantity.update_record(quantity = max(0, product_quantity.quantity - value))
@@ -133,6 +135,29 @@ def buy():
 @auth.requires_login()
 def invoice():
     return dict(invoice=request.args(0))
+
+@auth.requires_login()
+def product_detail():
+    try:
+        int(request.vars.id)
+    except ValueError:
+        raise HTTP(404, 'Product not found. Invalid ID.')
+
+    id = int(request.vars.id)
+    product = db(db.product.id == id).select().first()
+    reviews = db(db.review.product == product.id).select()
+
+    form = SQLFORM.factory(
+        Field('review_content', 'text', default='Fantastic product!'),
+        _class="form-inline"
+        )
+    if form.accepts(request.vars, session):
+        db.review.insert(review_content=form.vars.review_content,
+                            product=id,
+                            author=auth.user.id, 
+                            create_date=datetime.datetime.now())
+
+    return dict(product=product, reviews=reviews, form=form)
 
 def user():
     """

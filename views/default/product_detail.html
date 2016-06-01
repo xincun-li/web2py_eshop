@@ -1,0 +1,88 @@
+{{extend 'store_layout.html'}}        
+
+<div class="row-fluid">
+    <div class="span12">
+        <h1>{{=product.name}}</h1>
+    </div>
+</div>
+
+<div class="row-fluid">
+    <div class="span8">
+        <div class="block">
+            <div class="navbar navbar-inner block-header">
+                <div class="muted pull-left">{{=T('Product Image')}}</div>
+            </div>
+            <div class="block-content collapse in">
+                <div class="span12">
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <div class="main-image">
+                                <img src="{{=URL('download', args=product.image)}}" style="width: 50%;"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="span4">
+        <div class="block">
+            <div class="navbar navbar-inner block-header">
+                <div class="muted pull-left">{{=product.name}}</div>
+                <div class="pull-right"><span class="badge badge-warning">{{=str(product.quantity)+' '+T('in stock')}}</span></div>
+            </div>
+            <div class="block-content collapse in">
+                <div class="span12">
+                    <p>
+                        <dl class="dl-horizontal">
+                          <dt>{{=T('Price')}}</dt>
+                          <dd>R${{='%.2f' % product.price}}</dd>
+                        </dl>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row-fluid">
+    <div class="span12">
+        <div class="block">
+            <div class="navbar navbar-inner block-header navbar-no-padding">
+                <ul class="nav">
+                  <li><a href="#reviews" data-toggle="tab">{{=T('Reviews')}} <span class="badge badge-info">{{=db(db.review.product==product.id).count()}}</span></a></li>
+                </ul>
+            </div>
+            <h3>Write review</h3>
+            {{=form}}
+            <hr>
+            <div class="block-content collapse in">
+                <div class="span12">
+                    <div class="tab-content">
+                      <div class="tab-pane" id="reviews">
+                          {{if reviews:}}
+                          <ul class="media-list">
+                            {{for review in reviews:}}
+                              <li class="media">
+                                <div class="pull-left">
+                                    <div><small class="muted">{{=review.create_date}}</small></div>
+                                </div>
+                                <div class="media-body">
+                                  <h4 class="media-heading">{{='%(first_name)s %(last_name)s' % review.author}}</h4>
+                                  <div class="well well-small">
+                                      <p>{{=review.review_content}}</p>
+                                  </div>
+                                </div>
+                              </li>
+                            {{pass}}
+                          </ul>
+                          {{else:}}
+                          {{=T('No reviews.')}}
+                          {{pass}}
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -140,11 +140,19 @@ db.define_table('sale',
    Field('shipping_city'),
    Field('shipping_state'),
    Field('shipping_zip_code'),
+   Field('create_date','datetime'),
    Field('shipping_date','datetime'),
    Field('delivery_date','datetime'),
    Field('tracking_number'),
    auth.signature)
 
+db.define_table('review',
+    Field('product', 'reference product'),
+    Field('review_content', 'text'),
+    Field('create_date','datetime'),
+    Field('author',db.auth_user),
+    auth.signature
+    )
 
 def group_rows(rows,table1,*tables):
     last = None

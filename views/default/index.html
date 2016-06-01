@@ -19,7 +19,7 @@
             {{else:}}
               {{=T("Sold out.")}}
             {{pass}}
-            <a href="{{=URL('default', 'view_product', vars={'productid':product.id})}}" class="btn btn-default add-to-cart">
+            <a href="{{=URL('default', 'product_detail', vars=dict(id=product.id))}}" class="btn btn-default add-to-cart">
               <i class="fa fa-shopping-cart"></i>{{=T("View more")}}
             </a>
           </div>
