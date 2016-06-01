@@ -26,7 +26,7 @@
                 	<tr>
                 		<td class="span1"><a href="{{=URL('product', args=product[3].id)}}"><img src="{{=URL('download', args=product[3].image)}}" style="max-height: 50px;" /></a></td>
                 		<td class="span5">
-                			<a href="{{=URL('product', args=product[3].id)}}">{{=product[3].name}}</a>
+                			<a href="{{=URL('product_detail', vars=dict(id=product[3].id))}}">{{=product[3].name}}</a>
 
                 		</td>
                 		<td class="span2">R${{='%.2f' % product[3].price}}</td>

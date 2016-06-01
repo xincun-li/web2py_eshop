@@ -61,6 +61,9 @@ def remove_from_cart():
 
 @auth.requires_login()
 def select_address():
+    if not session.cart:
+       session.flash = 'Add something to shopping cart'
+       redirect(URL('index'))
     addresses = db(db.address.user_id == auth.user.id).select()
 
     adrs = []
