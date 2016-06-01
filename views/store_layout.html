@@ -30,6 +30,8 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                   <li><a href="{{=URL('default', 'index')}}">Home</a></li>
+                  <li><a href="{{=URL('default', 'product')}}">Product Manage</a></li>
+                  <li><a href="{{=URL('default', 'order_manage')}}">Order Manage</a></li>
                   <li><a href="{{=URL('default', 'checkout')}}">{{=T('Shopping Cart')}} <span class="badge badge-important">{{=len(session.cart)}}</span></a></li>
                   <li><img src="{{=URL('static', 'images/cart.png')}}"  height="42" ></a></li>
                 </ul>

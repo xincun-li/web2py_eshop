@@ -162,6 +162,22 @@ def product_detail():
 
     return dict(product=product, reviews=reviews, form=form)
 
+
+@auth.requires_membership('admin')
+def order_manage():
+    db.sale.id.readable = False
+    query = (db.sale.shipped == False)
+    fields = (db.sale.invoice, db.sale.buyer, db.sale.product, db.sale.price, db.sale.create_date)
+    headers = {'sale.invoice': 'Invoice','sale.buyer': 'Buyer','sale.product': 'Product','sale.price': 'Price','sale.create_date': 'Create Date'}
+    default_sort_order = [db.sale.id]
+
+    form = SQLFORM.grid(query=query, fields=fields, headers=headers, orderby=default_sort_order, create=False, deletable=False, editable=True, maxtextlength=256,
+                        formstyle = 'table table-striped table-bordered', paginate = 25)
+    return dict(form=form)
+
+    #grid = SQLFORM.grid(db.sale)
+    #return locals()
+
 def user():
     """
     exposes:
