@@ -166,14 +166,22 @@ def product_detail():
 @auth.requires_membership('admin')
 def order_manage():
     db.sale.id.readable = False
-    query = (db.sale.shipped == False)
-    fields = (db.sale.invoice, db.sale.buyer, db.sale.product, db.sale.price, db.sale.create_date)
-    headers = {'sale.invoice': 'Invoice','sale.buyer': 'Buyer','sale.product': 'Product','sale.price': 'Price','sale.create_date': 'Create Date'}
-    default_sort_order = [db.sale.id]
+    query1 = (db.sale.shipped == False)
+    fields1 = (db.sale.invoice, db.sale.buyer, db.sale.product, db.sale.price, db.sale.create_date)
+    headers1 = {'sale.invoice': 'Invoice','sale.buyer': 'Buyer','sale.product': 'Product','sale.price': 'Price',
+    'sale.create_date': 'Create Date'}
+    default_sort_order1 = [db.sale.id]
 
-    form = SQLFORM.grid(query=query, fields=fields, headers=headers, orderby=default_sort_order, create=False, deletable=False, editable=True, maxtextlength=256,
-                        formstyle = 'table table-striped table-bordered', paginate = 25)
-    return dict(form=form)
+    shipping_form = SQLFORM.grid(query=query1, fields=fields1, headers=headers1, orderby=default_sort_order1, create=False, deletable=False, editable=True, maxtextlength=64, paginate = 25)
+
+    query2 = (db.sale.shipped == True)
+    fields2 = (db.sale.invoice, db.sale.buyer, db.sale.product, db.sale.price, db.sale.create_date, db.sale.shipped, db.sale.shipping_date)
+    headers2 = {'sale.invoice': 'Invoice','sale.buyer': 'Buyer','sale.product': 'Product','sale.price': 'Price',
+    'sale.create_date': 'Create Date','sale.shipped': 'Shipped','sale.shipping_date': 'Shipping Date'}
+    default_sort_order2 = [db.sale.id]
+    shipped_form = SQLFORM.grid(query=query2, fields=fields2, headers=headers2, orderby=default_sort_order2, create=False, deletable=False, editable=True, maxtextlength=64, paginate = 25)
+
+    return dict(shipping_form=shipping_form, shipped_form=shipped_form)
 
     #grid = SQLFORM.grid(db.sale)
     #return locals()
