@@ -29,7 +29,7 @@
                 			<a href="{{=URL('product_detail', vars=dict(id=product[3].id))}}">{{=product[3].name}}</a>
 
                 		</td>
-                		<td class="span2">R${{='%.2f' % product[3].price}}</td>
+                		<td class="span2">${{='%.2f' % product[3].price}}</td>
                 		<td class="span2">
                 			<div class="row-fluid">
                 				<div class="span7">

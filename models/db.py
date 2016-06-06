@@ -135,12 +135,12 @@ db.define_table('sale',
    Field('product',db.product),
    Field('quantity','integer'),
    Field('price','double'),
+   Field('create_date','datetime'),
    Field('shipped','boolean',default=False),
-   Field('shipping_address'),
    Field('shipping_city'),
    Field('shipping_state'),
    Field('shipping_zip_code'),
-   Field('create_date','datetime'),
+   Field('shipping_address'),
    Field('shipping_date','datetime'),
    Field('delivery_date','datetime'),
    Field('tracking_number'),
@@ -149,24 +149,11 @@ db.define_table('sale',
 db.define_table('review',
     Field('product', 'reference product'),
     Field('review_content', 'text'),
-    Field('create_date','datetime'),
-    Field('author',db.auth_user),
+    Field('create_date', 'datetime'),
+    Field('author', db.auth_user),
     auth.signature
     )
 
-def group_rows(rows,table1,*tables):
-    last = None
-    new_rows = []
-    for row in rows:
-        row_table1 = row[table1]
-        if not last or row_table1.id!=last.id:
-            last = row_table1
-            new_rows.append(last)
-            for t in tables:
-                last[t] = []
-        for t in tables:
-            last[t].append(row[t])
-    return new_rows
 ## create admin user, groups and role
 if db(db.auth_group).count() == 0:
     admin = db.auth_group.insert(role='admin')
